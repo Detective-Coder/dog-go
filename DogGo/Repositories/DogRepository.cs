@@ -65,7 +65,7 @@ namespace DogGo.Repositories
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"
-                        SELECT Id, [Name], Address, Breed
+                        SELECT Id, [Name], Breed
                         FROM Dog
                         WHERE Id = @id
                     ";
