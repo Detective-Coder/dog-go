@@ -31,7 +31,7 @@ namespace DogGo.Repositories
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"
-                        SELECT Id, Name, Breed
+                        SELECT Id, Name, Breed, OwnerId
                         FROM Dog
                     ";
 
@@ -44,7 +44,8 @@ namespace DogGo.Repositories
                         {
                             Id = reader.GetInt32(reader.GetOrdinal("Id")),
                             Name = reader.GetString(reader.GetOrdinal("Name")),
-                            Breed = reader.GetString(reader.GetOrdinal("Breed"))
+                            Breed = reader.GetString(reader.GetOrdinal("Breed")),
+                            OwnerId = reader.GetInt32(reader.GetOrdinal("OwnerId"))
                         };
 
                         dogs.Add(dog);
