@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace DogGo.Controllers
@@ -15,7 +16,9 @@ namespace DogGo.Controllers
         // GET: WalkersController
         public ActionResult Index()
         {
-            List<Walker> walkers = _walkerRepo.GetAllWalkers();
+            int neighborhoodId = GetCurrentUserId();
+
+            List<Walker> walkers = _walkerRepo.GetWalkersInNeighborhood(neighborhoodId);
 
             return View(walkers);
         }
@@ -96,6 +99,12 @@ namespace DogGo.Controllers
             {
                 return View();
             }
+        }
+
+        private int GetCurrentUserId()
+        {
+            string id = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return int.Parse(id);
         }
 
         private readonly IWalkerRepository _walkerRepo;
