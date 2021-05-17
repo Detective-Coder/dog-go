@@ -23,7 +23,7 @@ namespace DogGo.Repositories
             }
         }
 
-        public List<Dog> GetAllDogs()
+        public List<Dogs> GetAllDogs()
         {
             using (SqlConnection conn = Connection)
             {
@@ -37,10 +37,10 @@ namespace DogGo.Repositories
 
                     SqlDataReader reader = cmd.ExecuteReader();
 
-                    List<Dog> dogs = new List<Dog>();
+                    List<Dogs> dogs = new List<Dogs>();
                     while (reader.Read())
                     {
-                        Dog dog = new Dog
+                        Dogs dog = new Dogs
                         {
                             Id = reader.GetInt32(reader.GetOrdinal("Id")),
                             Name = reader.GetString(reader.GetOrdinal("Name")),
@@ -57,7 +57,7 @@ namespace DogGo.Repositories
             }
         }
 
-        public Dog GetDogById(int id)
+        public Dogs GetDogById(int id)
         {
             using (SqlConnection conn = Connection)
             {
@@ -76,7 +76,7 @@ namespace DogGo.Repositories
 
                     if (reader.Read())
                     {
-                        Dog dog = new Dog
+                        Dogs dog = new Dogs
                         {
                             Id = reader.GetInt32(reader.GetOrdinal("Id")),
                             Name = reader.GetString(reader.GetOrdinal("Name")),
@@ -95,7 +95,7 @@ namespace DogGo.Repositories
             }
         }
 
-        public void AddDog(Dog dog)
+        public void AddDog(Dogs dog)
         {
             using (SqlConnection conn = Connection)
             {
@@ -119,7 +119,7 @@ namespace DogGo.Repositories
             }
         }
 
-        public void UpdateDog(Dog dog)
+        public void UpdateDog(Dogs dog)
         {
             using (SqlConnection conn = Connection)
             {
@@ -162,7 +162,7 @@ namespace DogGo.Repositories
             }
         }
 
-        public List<Dog> GetDogsByOwnerId(int ownerId)
+        public List<Dogs> GetDogsByOwnerId(int ownerId)
         {
             using (SqlConnection conn = Connection)
             {
@@ -180,11 +180,11 @@ namespace DogGo.Repositories
 
                     SqlDataReader reader = cmd.ExecuteReader();
 
-                    List<Dog> dogs = new List<Dog>();
+                    List<Dogs> dogs = new List<Dogs>();
 
                     while (reader.Read())
                     {
-                        Dog dog = new Dog()
+                        Dogs dog = new Dogs()
                         {
                             Id = reader.GetInt32(reader.GetOrdinal("Id")),
                             Name = reader.GetString(reader.GetOrdinal("Name")),

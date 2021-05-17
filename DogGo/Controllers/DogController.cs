@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace DogGo.Controllers
@@ -14,7 +15,9 @@ namespace DogGo.Controllers
         // GET: DogController
         public ActionResult Index()
         {
-            List<Dog> dogs = _dogRepo.GetAllDogs();
+            int ownerId = GetCurrentUserId();
+
+            List<Dogs> dogs = _dogRepo.GetAllDogs();
 
             return View(dogs);
         }
@@ -22,7 +25,7 @@ namespace DogGo.Controllers
         // GET: DogController/Details/5
         public ActionResult Details(int id)
         {
-            Dog dog = _dogRepo.GetDogById(id);
+            Dogs dog = _dogRepo.GetDogById(id);
 
             if (dog == null)
             {
@@ -41,7 +44,7 @@ namespace DogGo.Controllers
         // POST: DogController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(Dog dog)
+        public ActionResult Create(Dogs dog)
         {
             try
             {
@@ -58,7 +61,7 @@ namespace DogGo.Controllers
         // GET: DogController/Edit/5
         public ActionResult Edit(int id)
         {
-            Dog dog = _dogRepo.GetDogById(id);
+            Dogs dog = _dogRepo.GetDogById(id);
 
             if (dog == null)
             {
@@ -71,7 +74,7 @@ namespace DogGo.Controllers
         // POST: DogController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, Dog dog)
+        public ActionResult Edit(int id, Dogs dog)
         {
             try
             {
@@ -88,7 +91,7 @@ namespace DogGo.Controllers
         // GET: DogController/Delete/5
         public ActionResult Delete(int id)
         {
-            Dog dog = _dogRepo.GetDogById(id);
+            Dogs dog = _dogRepo.GetDogById(id);
 
             return View(dog);
         }
@@ -96,7 +99,7 @@ namespace DogGo.Controllers
         // POST: DogController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, Dog dog)
+        public ActionResult Delete(int id, Dogs dog)
         {
             try
             {
@@ -108,6 +111,12 @@ namespace DogGo.Controllers
             {
                 return View(dog);
             }
+        }
+
+        private int GetCurrentUserId()
+        {
+            string id = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return int.Parse(id);
         }
 
         private readonly IDogRepository _dogRepo;

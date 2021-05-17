@@ -1,11 +1,14 @@
 ﻿using DogGo.Models;
 using DogGo.Models.ViewModels;
 using DogGo.Repositories;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace DogGo.Controllers
@@ -24,7 +27,7 @@ namespace DogGo.Controllers
         public ActionResult Details(int id)
         {
             Owner owner = _ownerRepo.GetOwnerById(id);
-            List<Dog> dogs = _dogRepo.GetDogsByOwnerId(owner.Id);
+            List<Dogs> dogs = _dogRepo.GetDogsByOwnerId(owner.Id);
             List<Walker> walkers = _walkerRepo.GetWalkersInNeighborhood(owner.NeighborhoodId);
 
             ProfileViewModel vm = new ProfileViewModel()
@@ -122,6 +125,40 @@ namespace DogGo.Controllers
             {
                 return View(owner);
             }
+        }
+
+        // GET Method
+        public ActionResult Login()
+        {
+            return View();
+        }
+
+        // POST Method
+        [HttpPost]
+        public async Task<ActionResult> Login(LoginViewModel viewModel)
+        {
+            Owner owner = _ownerRepo.GetOwnerByEmail(viewModel.Email);
+
+            if (owner == null)
+            {
+                return Unauthorized();
+            }
+
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, owner.Id.ToString()),
+                new Claim(ClaimTypes.Email, owner.Email),
+                new Claim(ClaimTypes.Role, "DogOwner"),
+            };
+
+            var claimsIdentity = new ClaimsIdentity(
+                claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+            await HttpContext.SignInAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme,
+                new ClaimsPrincipal(claimsIdentity));
+
+            return RedirectToAction("Index", "Dog");
         }
 
         private readonly IOwnerRepository _ownerRepo;
